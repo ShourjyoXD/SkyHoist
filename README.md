@@ -25,7 +25,7 @@ SkyHoist is an offensive security tool designed to identify **Identity and Acces
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/ShourjyoXD/skyhoist.git](https://github.com/ShourjyoXD/skyhoist.git)
+   git clone https://github.com/ShourjyoXD/skyhoist.git
    cd skyhoist
 Install dependencies:
 
