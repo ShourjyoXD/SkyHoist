@@ -65,4 +65,4 @@ pytest -v
 ⚖️ Disclaimer
 SkyHoist is intended for authorized security testing, research, and educational purposes only. Unauthorized scanning of cloud infrastructure is illegal.
 
-Maintained by [Shourjyo]
+Maintained by [Shourjyo Chakraborty]
