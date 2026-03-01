@@ -1,0 +1,15 @@
+# Python stuff
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# AWS/Security stuff
+.aws/
+credentials
+*.pem
+*.json_results
+
+# VS Code stuff
+.vscode/
