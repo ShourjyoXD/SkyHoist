@@ -1,11 +1,12 @@
 import click
 from skyhoist.scanner.aws_client import AWSScanner
 from skyhoist.engine.analyzer import PathAnalyzer
+from skyhoist.output.visualizer import SkyVisualizer 
 
 @click.group()
 def cli():
     """SkyHoist: Cloud IAM Escalation & Pathfinding Engine"""
-    pass
+    SkyVisualizer.print_banner() 
 
 @cli.command()
 @click.option('--provider', default='aws')
@@ -16,19 +17,15 @@ def scan(provider):
         
         click.echo(f"[*] Authenticated as: {scanner.get_identity()}")
         
-        # 1. Get permissions
         perms = scanner.check_permissions()
         click.echo(f"[*] Analyzing {len(perms)} permissions...")
         
-        # 2. Run the Exploit Engine
         findings = analyzer.analyze(perms)
         
-        if not findings:
-            click.echo("[+] No immediate escalation paths found.")
-        else:
-            click.echo(f"[!] CRITICAL: Found {len(findings)} Escalation Paths!")
-            for f in findings:
-                click.secho(f"    -> {f['name']}: {f['description']}", fg='red', bold=True)
+        # Use the visualizer instead of raw text
+        SkyVisualizer.display_findings(findings)
+    else:
+        click.echo(f"[!] {provider} is not yet supported.")
 
 if __name__ == '__main__':
     cli()
