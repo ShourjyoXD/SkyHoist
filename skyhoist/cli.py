@@ -1,4 +1,5 @@
 import click
+from skyhoist.scanner.aws_client import AWSScanner
 
 @click.group()
 def cli():
@@ -6,12 +7,17 @@ def cli():
     pass
 
 @cli.command()
-@click.option('--provider', type=click.Choice(['aws', 'azure']), help='Cloud provider to scan')
+@click.option('--provider', default='aws', help='Cloud provider (aws/azure)')
 def scan(provider):
-    """Scan the target cloud environment for misconfigurations."""
-    click.echo(f"[*] Starting SkyHoist scan on {provider.upper()}...")
-    # Logic for scanning will go here soon!
-    click.echo("[+] Scan complete. No paths found (yet).")
+    """Scan the target cloud environment."""
+    if provider == 'aws':
+        scanner = AWSScanner()
+        click.echo(f"[*] Authenticated as: {scanner.get_identity()}")
+        
+        perms = scanner.check_permissions()
+        click.echo(f"[*] Found {len(perms)} base permissions.")
+    else:
+        click.echo(f"[!] {provider} is not yet supported.")
 
 if __name__ == '__main__':
     cli()
