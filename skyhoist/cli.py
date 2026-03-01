@@ -1,5 +1,6 @@
 import click
 from skyhoist.scanner.aws_client import AWSScanner
+from skyhoist.engine.analyzer import PathAnalyzer
 
 @click.group()
 def cli():
@@ -7,17 +8,27 @@ def cli():
     pass
 
 @cli.command()
-@click.option('--provider', default='aws', help='Cloud provider (aws/azure)')
+@click.option('--provider', default='aws')
 def scan(provider):
-    """Scan the target cloud environment."""
     if provider == 'aws':
         scanner = AWSScanner()
+        analyzer = PathAnalyzer()
+        
         click.echo(f"[*] Authenticated as: {scanner.get_identity()}")
         
+        # 1. Get permissions
         perms = scanner.check_permissions()
-        click.echo(f"[*] Found {len(perms)} base permissions.")
-    else:
-        click.echo(f"[!] {provider} is not yet supported.")
+        click.echo(f"[*] Analyzing {len(perms)} permissions...")
+        
+        # 2. Run the Exploit Engine
+        findings = analyzer.analyze(perms)
+        
+        if not findings:
+            click.echo("[+] No immediate escalation paths found.")
+        else:
+            click.echo(f"[!] CRITICAL: Found {len(findings)} Escalation Paths!")
+            for f in findings:
+                click.secho(f"    -> {f['name']}: {f['description']}", fg='red', bold=True)
 
 if __name__ == '__main__':
     cli()
